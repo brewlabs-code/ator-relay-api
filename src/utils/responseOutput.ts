@@ -5,8 +5,10 @@ type ResponseOutput = {
 };
 
 export const responseOutput = ({ message, data, status }: ResponseOutput) => {
-  const allowDomain =
-    import.meta.env.MODE === "development" ? "*" : "https://ator.io";
+  // const allowDomain =
+  //   import.meta.env.MODE === "development" ? "*" : "https://ator.io";
+
+  const allowDomain = "*";
 
   return new Response(
     JSON.stringify({

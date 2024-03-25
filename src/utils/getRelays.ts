@@ -2,14 +2,14 @@ import { WarpFactory } from "warp-contracts";
 import { EthersExtension } from "warp-contracts-plugin-ethers";
 import { responseOutput } from "@utils/responseOutput";
 
-export const getRelays = async () => {
+export const getRelays = async (address?: `0x${string}`) => {
   const warp = WarpFactory.forMainnet().use(new EthersExtension());
   const contract = warp.contract("LYtr_ztHqd4nFFSZyYN9_BWIinESJNBVzOJwo1u5dU0");
 
   try {
     const { result } = await contract.viewState({
       function: "verified",
-      address: null,
+      address: address || null,
     });
 
     if (!result) {
