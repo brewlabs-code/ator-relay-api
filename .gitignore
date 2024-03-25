@@ -3,8 +3,11 @@ dist/
 # generated types
 .astro/
 
-# warp stuff
+# Warp stuff
 cache/
+
+# Netlify stuff
+.netlify/
 
 # dependencies
 node_modules/
