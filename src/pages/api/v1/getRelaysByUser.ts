@@ -1,11 +1,12 @@
 import type { APIRoute } from "astro";
-import { getRelays } from "@utils/getRelays";
+import { getRelaysByUser } from "@utils/getRelaysByUser";
 
-export const GET: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request }) => {
   const address = new URL(request.url).searchParams.get(
     "address"
   ) as `0x${string}`;
+
   // Get the data
-  const response = await getRelays(address);
+  const response = await getRelaysByUser(address);
   return response;
 };

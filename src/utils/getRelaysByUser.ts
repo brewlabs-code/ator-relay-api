@@ -2,13 +2,21 @@ import { WarpFactory } from "warp-contracts";
 import { EthersExtension } from "warp-contracts-plugin-ethers";
 import { responseOutput } from "@utils/responseOutput";
 
-export const getRelays = async () => {
+export const getRelaysByUser = async (address?: `0x${string}`) => {
   const warp = WarpFactory.forMainnet().use(new EthersExtension());
   const contract = warp.contract("LYtr_ztHqd4nFFSZyYN9_BWIinESJNBVzOJwo1u5dU0");
+
+  if (!address) {
+    return responseOutput({
+      status: 400,
+      message: "Error: No address provided xx",
+    });
+  }
 
   try {
     const { result } = await contract.viewState({
       function: "verified",
+      address: address,
     });
 
     if (!result) {
@@ -31,7 +39,7 @@ export const getRelays = async () => {
         totalUsers: uniqueAddresses.length,
       },
       status: 200,
-      message: "Success. All relays fetched.",
+      message: `Success. All relays fetched for ${address}`,
     });
   } catch (error) {
     return responseOutput({
