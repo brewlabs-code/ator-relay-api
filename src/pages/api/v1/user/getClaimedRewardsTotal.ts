@@ -6,12 +6,9 @@ import { EthersExtension } from "warp-contracts-plugin-ethers";
 import { responseOutput } from "@utils/responseOutput";
 
 export const POST: APIRoute = async ({ request }) => {
-  const address = new URL(request.url).searchParams.get(
-    "address"
-  ) as `0x${string}`;
-
-  const warp = WarpFactory.forMainnet().use(new EthersExtension());
-  const contract = warp.contract(import.meta.env.VITE_WARP_CONTRACT);
+  // Get the users address
+  const body = await request.json();
+  const address = body.address as `0x${string}`;
 
   if (!address)
     return responseOutput({
@@ -25,11 +22,18 @@ export const POST: APIRoute = async ({ request }) => {
       message: "Invalid address provided",
     });
 
+  // Query the contract
+  const warp = WarpFactory.forMainnet().use(new EthersExtension());
+  const contract = warp.contract(import.meta.env.VITE_WARP_CONTRACT);
+
   try {
-    const { result } = await contract.viewState({
-      function: "claimable",
-      address,
-    });
+    // const { result } = await contract.viewState({
+    //   function: "claimable",
+    //   address,
+    // });
+
+    // Mocking the result
+    let result = { claimedRewardsTotal: 1000.56 };
 
     return responseOutput({
       data: result,

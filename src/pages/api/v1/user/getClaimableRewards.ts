@@ -1,11 +1,13 @@
+import type { APIRoute } from "astro";
+
 import { isAddress } from "viem";
 import { WarpFactory } from "warp-contracts";
 import { EthersExtension } from "warp-contracts-plugin-ethers";
 import { responseOutput } from "@utils/responseOutput";
 
-export const getClaimableRelays = async (address: `0x${string}`) => {
+const getClaimableRewards = async (address: `0x${string}`) => {
   const warp = WarpFactory.forMainnet().use(new EthersExtension());
-  const contract = warp.contract("LYtr_ztHqd4nFFSZyYN9_BWIinESJNBVzOJwo1u5dU0");
+  const contract = warp.contract(import.meta.env.VITE_WARP_CONTRACT);
 
   if (!address)
     return responseOutput({
@@ -20,10 +22,13 @@ export const getClaimableRelays = async (address: `0x${string}`) => {
     });
 
   try {
-    const { result } = await contract.viewState({
-      function: "claimable",
-      address,
-    });
+    // const { result } = await contract.viewState({
+    //   function: "claimable",
+    //   address,
+    // });
+
+    // Mocking return value
+    let result = { claimableRewards: 453.547 };
 
     return responseOutput({
       data: result,
@@ -37,4 +42,12 @@ export const getClaimableRelays = async (address: `0x${string}`) => {
       message: "Error",
     });
   }
+};
+
+export const POST: APIRoute = async ({ request }) => {
+  const body = await request.json();
+  const address = body.address as `0x${string}`;
+  // Get the data
+  const response = await getClaimableRewards(address);
+  return response;
 };

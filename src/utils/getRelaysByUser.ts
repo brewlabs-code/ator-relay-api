@@ -4,7 +4,10 @@ import { responseOutput } from "@utils/responseOutput";
 
 export const getRelaysByUser = async (address?: `0x${string}`) => {
   const warp = WarpFactory.forMainnet().use(new EthersExtension());
-  const contract = warp.contract("LYtr_ztHqd4nFFSZyYN9_BWIinESJNBVzOJwo1u5dU0");
+  const contract = warp.contract(import.meta.env.VITE_WARP_CONTRACT);
+
+  const { sortKey, cachedValue } = await contract.readState();
+  console.log({ sortKey, cachedValue });
 
   if (!address) {
     return responseOutput({
@@ -37,6 +40,9 @@ export const getRelaysByUser = async (address?: `0x${string}`) => {
       data: {
         totalVerifiedRelays: verifiedKeysCount,
         totalUsers: uniqueAddresses.length,
+        relays: result,
+        cachedValue: cachedValue.state,
+        error: cachedValue.errorMessages,
       },
       status: 200,
       message: `Success. All relays fetched for ${address}`,
