@@ -61,8 +61,9 @@ const mockData = [
 ];
 
 export const POST: APIRoute = async ({ request }) => {
-  const body = await request.json();
-  const address = body.address as `0x${string}`;
+  // const body = await request.json();
+  // const address = body.address as `0x${string}`;
+  const address = "0x7Dd539543F9Ac66c916e9DD1D720e508D75E0D7f";
 
   // Query the contract
   const warp = WarpFactory.forMainnet().use(new EthersExtension());
@@ -75,11 +76,13 @@ export const POST: APIRoute = async ({ request }) => {
     });
 
   try {
-    // const { result } = await contract.viewState({
-    //   function: "verified",
-    // });
+    const { result } = await contract.viewState({
+      function: "verified",
+      address,
+    });
 
-    const result = mockData;
+    // Mocking the result
+    //const result = mockData;
 
     if (!result) {
       return responseOutput({
@@ -99,7 +102,7 @@ export const POST: APIRoute = async ({ request }) => {
     return responseOutput({
       data: error,
       status: 500,
-      message: "Error",
+      message: "Error retrieving relays.",
     });
   }
 };
