@@ -1,14 +1,9 @@
 import type { APIRoute } from "astro";
 
 import { isAddress } from "viem";
-import { WarpFactory } from "warp-contracts";
-import { EthersExtension } from "warp-contracts-plugin-ethers";
 import { responseOutput } from "@utils/responseOutput";
 
 const getClaimableRewards = async (address: `0x${string}`) => {
-  const warp = WarpFactory.forMainnet().use(new EthersExtension());
-  const contract = warp.contract(import.meta.env.VITE_WARP_CONTRACT);
-
   if (!address)
     return responseOutput({
       status: 400,
@@ -22,13 +17,13 @@ const getClaimableRewards = async (address: `0x${string}`) => {
     });
 
   try {
-    const { result } = await contract.viewState({
-      function: "claimable",
-      address,
-    });
+    // const { result } = await contract.viewState({
+    //   function: "claimable",
+    //   address,
+    // });
 
     // Mocking return value
-    // let result = { claimableRewards: 453.547 };
+    let result = { claimableRewards: 453.547 };
 
     return responseOutput({
       data: result,
