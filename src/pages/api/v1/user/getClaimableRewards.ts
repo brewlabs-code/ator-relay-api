@@ -22,13 +22,13 @@ const getClaimableRewards = async (address: `0x${string}`) => {
     });
 
   try {
-    // const { result } = await contract.viewState({
-    //   function: "claimable",
-    //   address,
-    // });
+    const { result } = await contract.viewState({
+      function: "claimable",
+      address,
+    });
 
     // Mocking return value
-    let result = { claimableRewards: 453.547 };
+    // let result = { claimableRewards: 453.547 };
 
     return responseOutput({
       data: result,

@@ -1,15 +1,8 @@
 import type { APIRoute } from "astro";
-import { WarpFactory } from "warp-contracts";
-import { EthersExtension } from "warp-contracts-plugin-ethers";
+import { contract } from "@utils/warp.config";
 import { responseOutput } from "@utils/responseOutput";
 
 export const POST: APIRoute = async () => {
-  // Query the contract
-  const warp = WarpFactory.forMainnet().use(new EthersExtension());
-  const contract = warp.contract(import.meta.env.VITE_WARP_CONTRACT);
-
-  const { sortKey, cachedValue } = await contract.readState();
-
   try {
     const { result } = await contract.viewState({
       function: "verified",
@@ -22,17 +15,18 @@ export const POST: APIRoute = async () => {
       });
     }
 
+    // Manipulate the data
     const addresses = Object.values(result);
     const uniqueAddresses = addresses.filter(
       (addr, index, self) => self.indexOf(addr) === index
     );
-
     const verifiedKeysCount = Object.keys(result).length;
 
     return responseOutput({
       data: {
         totalVerifiedRelays: verifiedKeysCount,
         totalUsers: uniqueAddresses.length,
+        relays: result,
       },
       status: 200,
       message: "Success. All relays fetched.",
@@ -41,7 +35,7 @@ export const POST: APIRoute = async () => {
     return responseOutput({
       data: error,
       status: 500,
-      message: JSON.stringify(cachedValue.errorMessages) || "Error",
+      message: "Error",
     });
   }
 };

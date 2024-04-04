@@ -1,17 +1,13 @@
 import type { APIRoute } from "astro";
-
 import { isAddress } from "viem";
-import { WarpFactory } from "warp-contracts";
-import { EthersExtension } from "warp-contracts-plugin-ethers";
+
+import { contract } from "@utils/warp.config";
 import { responseOutput } from "@utils/responseOutput";
 
 export const POST: APIRoute = async ({ request }) => {
   const address = new URL(request.url).searchParams.get(
     "address"
   ) as `0x${string}`;
-
-  const warp = WarpFactory.forMainnet().use(new EthersExtension());
-  const contract = warp.contract(import.meta.env.VITE_WARP_CONTRACT);
 
   if (!address)
     return responseOutput({
@@ -31,10 +27,23 @@ export const POST: APIRoute = async ({ request }) => {
       address,
     });
 
+    // Construct the response
+    const returnedData = (result as string[]).map((data) => {
+      return { fingerPrint: data };
+    });
+    const count = Object.keys(result as object).length;
+    const message =
+      count === 0
+        ? "No claimable relays found"
+        : "Success. All claimable relays fetched.";
+
     return responseOutput({
-      data: result,
+      data: {
+        count,
+        relays: returnedData,
+      },
+      message,
       status: 200,
-      message: "Success. All relays fetched.",
     });
   } catch (error) {
     return responseOutput({
