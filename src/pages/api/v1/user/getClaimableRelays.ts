@@ -29,7 +29,13 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Construct the response
     const returnedData = (result as string[]).map((data) => {
-      return { fingerPrint: data };
+      return {
+        fingerprint: data,
+        status: "claimable",
+        active: false,
+        renounceable: false,
+        claimable: true,
+      };
     });
     const count = Object.keys(result as object).length;
     const message =
